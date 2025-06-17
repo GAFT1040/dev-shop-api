@@ -13,13 +13,13 @@ export class ClienteController {
   @Get('/all')
   @ApiOperation({ summary: 'Buscar todos os cleintes.' })
   async buscarTodos() {}
-  @Post('/ ')
+  @Post('/')
   @ApiOperation({ summary: 'Criar um novo cliente.' })
   async criar() {}
   @Patch('/:id')
   @ApiOperation({ summary: 'Atualiza um clieante pelo ID.' })
   async atualizar() {}
   @Delete('/:id')
-  @ApiOperation({ summary: 'Deleta um cliente por ID.' })
+  @ApiOperation({ summary: 'Deleta um cliente pelo ID.' })
   async deletar() {}
 }
