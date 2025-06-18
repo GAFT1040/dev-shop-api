@@ -2,16 +2,19 @@ import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import * as pkg from '../package.json';
+import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
+  const porta = process.env.PORT ?? 3000;
   const app = await NestFactory.create(AppModule);
   app.enableCors();
+  app.useGlobalPipes(new ValidationPipe());
 
   const config = new DocumentBuilder()
     .setTitle(pkg.displayName)
     .setDescription(pkg.description)
     .setVersion(pkg.version)
-    .addServer('http://127.0.0.1:3000', 'URl de desenvolvimento!')
+    .addServer(`http://127.0.0.1:${porta}`, 'URl de desenvolvimento!')
     .addBearerAuth()
     .setContact(
       pkg.author,
@@ -22,6 +25,6 @@ async function bootstrap() {
   const documentFactory = () => SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('docs', app, documentFactory);
 
-  await app.listen(process.env.PORT ?? 3000);
+  await app.listen(porta);
 }
 bootstrap();
