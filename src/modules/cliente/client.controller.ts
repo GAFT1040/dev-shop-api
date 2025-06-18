@@ -21,7 +21,10 @@ export class ClienteController {
   @ApiOperation({ summary: 'Criar um novo cliente.' })
   async criar(@Body() dto: CriarClienteDTO) {
     const cliente = await this.service.criar(dto);
-    return { cliente };
+    return {
+      mensagem: 'Cliente cadastrado com sucesso!',
+      cliente,
+    };
   }
   @Patch('/:id')
   @ApiOperation({ summary: 'Atualiza um clieante pelo ID.' })
