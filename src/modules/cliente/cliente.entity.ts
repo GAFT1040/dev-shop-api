@@ -20,7 +20,7 @@ export class Cliente implements ICliente {
   @Column({ unique: true })
   email: string;
 
-  @Column()
+  @Column({ select: false })
   senha: string;
 
   @CreateDateColumn({ type: 'timestamptz' })
