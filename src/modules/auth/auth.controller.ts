@@ -1,9 +1,21 @@
-import { Controller, Delete, Head, HttpStatus, Post } from '@nestjs/common';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  Body,
+  Controller,
+  Delete,
+  Head,
+  HttpStatus,
+  Post,
+} from '@nestjs/common';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { LoginDto } from './dtos/login.dto';
+import { AuthSercice } from './auth.service';
 
 @Controller('/auh')
 @ApiTags('Autentificação')
 export class AuthController {
+  constructor(private readonly service: AuthSercice) {}
+
+  @ApiBearerAuth()
   @Head('/')
   @ApiOperation({
     summary: 'Valida a autentificação',
@@ -19,8 +31,15 @@ export class AuthController {
     description:
       'Rota responsável pela autentificação do sistema, retorna um token JWT.',
   })
-  async login() {}
+  async login(@Body() dto: LoginDto) {
+    const token = await this.service.login(dto);
+    return {
+      mensagem: 'Login realizado com sucesso!',
+      token,
+    };
+  }
 
+  @ApiBearerAuth()
   @Delete('/logout')
   @ApiOperation({
     summary: 'Realiza o logout.',

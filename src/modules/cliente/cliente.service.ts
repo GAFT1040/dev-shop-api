@@ -2,8 +2,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { CriarClienteDTO } from './dtos/criar-cliente.dto';
 import { Cliente } from './cliente.entity';
 import { Repository } from 'typeorm';
-import { ConflictException } from '@nestjs/common';
+import { ConflictException, NotFoundException } from '@nestjs/common';
 import * as bcrpty from 'bcrypt';
+import { NotFoundError } from 'rxjs';
 
 export class ClienteService {
   constructor(
@@ -39,5 +40,21 @@ export class ClienteService {
     } = await this.repository.save(cliente);
 
     return cliente_db;
+  }
+
+  async buscarPorEmail(email: string) {
+    const cliente = await this.repository.findOne({
+      where: {
+        email: email.toLowerCase(),
+      },
+      select: {
+        id: true,
+        senha: true,
+      },
+    });
+
+    if (!cliente) throw new NotFoundException('Nenhum cliente encontrado!');
+
+    return cliente;
   }
 }
