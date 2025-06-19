@@ -57,4 +57,10 @@ export class ClienteService {
 
     return cliente;
   }
+
+  async buscarPorId() {}
+
+  async atualizar() {}
+
+  async deletar() {}
 }

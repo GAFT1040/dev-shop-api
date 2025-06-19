@@ -8,7 +8,12 @@ async function bootstrap() {
   const porta = process.env.PORT ?? 3000;
   const app = await NestFactory.create(AppModule);
   app.enableCors();
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true,
+      whitelist: true,
+    }),
+  );
 
   const config = new DocumentBuilder()
     .setTitle(pkg.displayName)
