@@ -2,6 +2,7 @@ import { Body, Controller, Delete, Get, Patch, Post } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CriarClienteDTO } from './dtos/criar-cliente.dto';
 import { ClienteService } from './cliente.service';
+import { Publico } from '../auth/auth.guard';
 
 @Controller('/cliente')
 @ApiTags('Cliente')
@@ -20,6 +21,7 @@ export class ClienteController {
 
   @Post('/')
   @ApiOperation({ summary: 'Criar um novo cliente.' })
+  @Publico()
   async criar(@Body() dto: CriarClienteDTO) {
     const cliente = await this.service.criar(dto);
     return {

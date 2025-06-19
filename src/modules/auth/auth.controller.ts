@@ -9,6 +9,7 @@ import {
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { LoginDto } from './dtos/login.dto';
 import { AuthSercice } from './auth.service';
+import { Publico } from './auth.guard';
 
 @Controller('/auh')
 @ApiTags('Autentificação')
@@ -31,6 +32,7 @@ export class AuthController {
     description:
       'Rota responsável pela autentificação do sistema, retorna um token JWT.',
   })
+  @Publico()
   async login(@Body() dto: LoginDto) {
     const token = await this.service.login(dto);
     return {

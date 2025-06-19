@@ -5,6 +5,8 @@ import { ClienteModule } from '../cliente/client.module';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { config } from 'process';
+import { APP_GUARD } from '@nestjs/core';
+import { AuthGuard } from './auth.guard';
 
 @Module({
   imports: [
@@ -31,7 +33,13 @@ import { config } from 'process';
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthSercice],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
+    },
+    AuthSercice,
+  ],
   exports: [AuthSercice],
 })
 export class AuthModule {}
