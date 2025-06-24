@@ -9,6 +9,7 @@ import { JwtService } from '@nestjs/jwt';
 import { LoginDto } from './dtos/login.dto';
 import { ETipoAcesso } from 'src/types/auth/tipo-acesso.enum';
 import * as bcrypt from 'bcrypt';
+import { IAuth } from 'src/types/auth/auth.interface';
 
 @Injectable()
 export class AuthSercice {
@@ -40,7 +41,7 @@ export class AuthSercice {
 
     if (!match) throw new UnauthorizedException('Credenciais inválidas!');
 
-    const payload = { tipo: dto.tipo, id: response.id };
+    const payload: IAuth = { tipo: dto.tipo, id: response.id };
 
     const token = this.jwtService.sign(payload);
 

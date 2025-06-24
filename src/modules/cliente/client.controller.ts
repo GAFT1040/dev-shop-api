@@ -18,7 +18,10 @@ import { ClienteService } from './cliente.service';
 import { Publico } from '../auth/auth.guard';
 import { IdDTO } from 'src/common/decorators/dtos/id.dto';
 import { ETipoAcesso } from 'src/types/auth/tipo-acesso.enum';
-import { Perfil } from 'src/common/decorators/perfil.decorator';
+import { Auth } from 'src/common/decorators/auth.decorator';
+import { Perfil } from '../auth/perfil.guard';
+import { IAuth } from 'src/types/auth/auth.interface';
+import { AtualizarClienteDto } from './dtos/atualizar-cliente.dto';
 
 @Controller('/cliente')
 @ApiTags('Cliente')
@@ -30,7 +33,7 @@ export class ClienteController {
   @ApiOperation({ summary: 'Buscar um cliente pelo ID.' })
   @ApiParam({ name: 'id', type: Number, required: true })
   async buscarPorId(@Param() param: IdDTO) {
-    console.log(param);
+    return await this.service.buscarPorId(param.id);
   }
 
   @ApiBearerAuth()
@@ -46,16 +49,21 @@ export class ClienteController {
     const cliente = await this.service.criar(dto);
     return {
       mensagem: 'Cliente cadastrado com sucesso!',
-      cliente,
+      data: cliente,
     };
   }
 
   @ApiBearerAuth()
-  @Patch('/:id')
-  @ApiOperation({ summary: 'Atualiza um clieante pelo ID.' })
-  @ApiParam({ name: 'id', type: Number, required: true })
-  @Perfil(ETipoAcesso.USUARIO)
-  async atualizar(@Param() param: IdDTO) {}
+  @Patch('/')
+  @ApiOperation({ summary: 'Atualiza um clieante.' })
+  @Perfil(ETipoAcesso.CLIENTE)
+  async atualizar(@Auth() auth: IAuth, @Body() dto: AtualizarClienteDto) {
+    const cliente = await this.service.atualizar(auth.id, dto);
+    return {
+      mensagem: `Cliente '${cliente.id}' atualizado com sucesso!`,
+      data: cliente,
+    };
+  }
 
   @ApiBearerAuth()
   @Delete('/:id')

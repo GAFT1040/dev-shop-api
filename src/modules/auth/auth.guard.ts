@@ -8,6 +8,7 @@ import {
 import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
+import { IAuth } from 'src/types/auth/auth.interface';
 
 export const IS_PUBLIC_KEY = 'isPublic';
 export const Publico = () => SetMetadata(IS_PUBLIC_KEY, true);
@@ -33,7 +34,7 @@ export class AuthGuard implements CanActivate {
       if (!token) throw new Error();
 
       const payload = await this.jwtSercice.verify(token);
-      request['user'] = payload;
+      request['user'] = payload as IAuth;
     } catch {
       throw new UnauthorizedException('Acesso negado!');
     }

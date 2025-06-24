@@ -5,3 +5,7 @@ export interface ILogin {
   identificador: string;
   senha: string;
 }
+export interface IAuth {
+  tipo: ETipoAcesso;
+  id: number;
+}

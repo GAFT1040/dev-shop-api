@@ -7,7 +7,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { config } from 'process';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './auth.guard';
-import { PerfilGuard } from 'src/common/decorators/perfil.decorator';
+import { PerfilGuard } from './perfil.guard';
 
 @Module({
   imports: [
