@@ -66,9 +66,14 @@ export class ClienteController {
   }
 
   @ApiBearerAuth()
-  @Delete('/:id')
-  @ApiOperation({ summary: 'Deleta um cliente pelo ID.' })
+  @Delete('/')
+  @ApiOperation({ summary: 'Deleta um cliente.' })
   @ApiParam({ name: 'id', type: Number, required: true })
   @Perfil(ETipoAcesso.CLIENTE)
-  async deletar(@Param() param: IdDTO) {}
+  async deletar(@Auth() auth: IAuth) {
+    await this.service.deletar(auth.id);
+    return {
+      mensagem: `Cliente '${auth.id}' deletado com sucesso!`,
+    };
+  }
 }

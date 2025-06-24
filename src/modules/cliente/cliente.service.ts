@@ -106,5 +106,9 @@ export class ClienteService {
     return await this.buscarPorId(cliente.id);
   }
 
-  async deletar() {}
+  async deletar(id: number) {
+    const cliente = await this.buscarPorId(id);
+
+    await this.repository.delete(cliente.id);
+  }
 }
