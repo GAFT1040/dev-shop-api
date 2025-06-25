@@ -10,12 +10,14 @@ import { LoginDto } from './dtos/login.dto';
 import { ETipoAcesso } from 'src/types/auth/tipo-acesso.enum';
 import * as bcrypt from 'bcrypt';
 import { IAuth } from 'src/types/auth/auth.interface';
+import { SuporteService } from '../suporte/suporte.service';
 
 @Injectable()
 export class AuthSercice {
   constructor(
     private readonly clienteService: ClienteService,
     private readonly jwtService: JwtService,
+    private readonly suporteService: SuporteService,
   ) {}
 
   async login(dto: LoginDto) {
@@ -23,6 +25,15 @@ export class AuthSercice {
 
     switch (dto.tipo) {
       case ETipoAcesso.USUARIO:
+        const usuario = await this.suporteService.buscarPorEmail(
+          dto.identificador,
+        );
+        if (!usuario.ativo)
+          throw new UnauthorizedException('Acesso não autorizado!');
+        response = {
+          id: usuario.id,
+          senha: usuario.senha,
+        };
         break;
       case ETipoAcesso.CLIENTE:
         const cliente = await this.clienteService.buscarPorEmail(

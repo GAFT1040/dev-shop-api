@@ -8,10 +8,12 @@ import { config } from 'process';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './auth.guard';
 import { PerfilGuard } from './perfil.guard';
+import { SuporteModule } from '../suporte/suporte.module';
 
 @Module({
   imports: [
     ClienteModule,
+    SuporteModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
