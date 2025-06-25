@@ -1,4 +1,5 @@
 import {
+  ConflictException,
   Injectable,
   Logger,
   NotFoundException,
@@ -10,6 +11,8 @@ import { Suporte } from './suporte.entity';
 import * as bcrypt from 'bcrypt';
 import { ConfigService } from '@nestjs/config';
 import { NotFoundError } from 'rxjs';
+import { CriarClienteDTO } from '../cliente/dtos/criar-cliente.dto';
+import { AtualizarClienteDto } from '../cliente/dtos/atualizar-cliente.dto';
 
 @Injectable()
 export class SuporteService implements OnModuleInit {
@@ -63,12 +66,65 @@ export class SuporteService implements OnModuleInit {
 
     return suporte;
   }
+  async buscarPorId(id: number) {
+    const suporte = await this.repository.findOne({
+      where: { id },
+    });
 
-  async buscarPorId(id: number) {}
+    if (!suporte) throw new NotFoundException('USuário não encontrado!');
 
-  async criar(dto: any) {}
+    return suporte;
+  }
 
-  async atualizar(id: number, dto: any) {}
+  async criar(dto: CriarClienteDTO) {
+    const existente = await this.repository.findOne({
+      where: { email: dto.email },
+    });
+
+    if (existente) {
+      if (existente) throw new ConflictException('E-mail já está cadastrado.');
+    }
+
+    const hash = await this.hash(dto.senha);
+
+    const suporte = this.repository.create({
+      ...dto,
+      senha: hash,
+    });
+
+    const {
+      senha: _,
+      email: __,
+      ...suporte_db
+    } = await this.repository.save(suporte);
+
+    return suporte_db;
+  }
+
+  async atualizar(id: number, dto: AtualizarClienteDto) {
+    const cliente = await this.buscarPorId(id);
+
+    if (dto.email && dto.email !== cliente.email) {
+      const existente = await this.repository.findOne({
+        where: { email: dto.email },
+      });
+
+      if (existente)
+        throw new ConflictException('Já existe um cadastro com esse E-mail!');
+    }
+
+    if (dto.senha) {
+      dto.senha = await this.hash(dto.senha);
+    }
+
+    await this.repository.update(
+      { id: cliente.id },
+      {
+        ...dto,
+      },
+    );
+    return await this.buscarPorId(cliente.id);
+  }
 
   async deletar(id: number) {}
 }
